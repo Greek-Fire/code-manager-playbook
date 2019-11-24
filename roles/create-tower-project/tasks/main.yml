@@ -1,0 +1,42 @@
+---
+- name: 'Grab the ID for the project' 
+  uri:
+    url:              "https://{{ tower_fqdn }}/api/v2/projects/?name={{ tower_project_name }}"
+    user:             "{{ tower_username }}"
+    password:         "{{ tower_password }}"
+    method:           GET
+    force_basic_auth: true
+    status_code:      200
+    validate_certs:   false
+  register: project_id_response
+
+- set_fact:
+    inventory_id: "{{ (project_id_response.json.results | first)['id'] }}"
+  when:
+    - (project_id_response.json.results | length == 1)
+
+- name: 'Create the project, it does not exist' 
+  uri:
+    url:               "https://{{ tower_fqdn }}/api/v2/projectss/"
+    user:              "{{ tower_username }}"
+    password:          "{{ tower_password }}"
+    method:            POST
+    body:
+      name:            "{{ tower_inventory_name }}"
+      organization:    "{{ tower_organization_id }}"
+      description:     "{{ tower_description }}"
+    force_basic_auth:  true
+    status_code:       201
+    body_format:       json
+    validate_certs:    false
+  changed_when:        true
+  register: new_project_id_response 
+  when:
+    - (project_id_response.json.results | length < 1)
+    - (project_id is undefined)
+
+  set_fact:
+    project_id: "{{ new_project_id_response.json['id'] }}"
+  when:
+    - project_id is undefined
+

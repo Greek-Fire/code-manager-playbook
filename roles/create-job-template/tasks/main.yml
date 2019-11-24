@@ -1,0 +1,62 @@
+---
+  - name: "Grab {{ template_name }} Template ID"
+    uri:
+      url:              "https://{{ tower_fqdn }}/api/v2/job_templates?search={{ template_name }}"
+      method:           GET
+      status_code:      200
+      force_basic_auth: true
+      validate_certs:   false
+      user:             "{{ tower_username }}"
+      password:         "{{ tower_password }}"
+    register:           temp_id
+
+  - set_fact:
+      template_id:      "{{ temp_id | json_query(queryt) }}"
+      project_id:       "{{ temp_id | json_query(queryp) }}"
+      inventory_id:     "{{ temp_id | json_query(queryi) }}"
+      credential_id:    "{{ temp_id | json_query(queryc) }}"
+      api_inventory_name:   "{{ temp_id | json_query(queryin) }}"
+      api_project_name:     "{{ temp_id | json_query(querypn) }}"
+      api_credential_name:  "{{ temp_id | json_query(querycn) }}"
+    vars:
+      queryt:           "json.results[0].id"
+      queryp:           "json.results[0].project"
+      queryi:           "json.results[0].inventory"
+      queryc:           "json.results[0].credential"
+      queryin:          "json.results[0].summary_fields.inventory.name"
+      querypn:          "json.results[0].summary_fields.project.name"
+      querycn:          "json.results[0].summary_fields.credentials.name"
+    when:
+      - ( temp_id.json.results | length == 1)
+
+  - name: "Create the {{ template_name }} template"
+    uri:
+      url:              "https://{{ tower_fqdn }}/api/v2/job_templates/"
+      method:           POST
+      status_code:      200
+      force_basic_auth: true
+      validate_certs:   false
+      body_format:      json
+      user:             "{{ tower_username }}"
+      password:        "{{ tower_password }}"
+      body:
+        name:          "{{ template_name }}"
+        inventory:     "{{ inventory_id }}"
+        verbosity:      "{{ verbosity_level | default(0)}}"
+        project:        "{{ project_id }}"
+        job_type:       "{{ job_type | default('run') }}"
+        playbook:       "{{ playbook_name | default('main.yml') }}"
+        job_tags:       "{{ job_tags | default('') }}"
+        forks:          "{{ forks | default('0') }}"
+        skip_tags:      "{{ skip_job_tags | default('None') }}"
+        credential:     "{{ credential_id  }}"
+        become_enabled: "{{ become_enabled | default('false') }}"
+    register:           create_temp_id
+    when:
+        - (temp_id.json.results | length < 1)
+        - (template_id is undefined)
+
+  - set_fact:
+      template_id:       "{{ temp_id | json_query(queryt) }}"
+    when:
+      - (template_id is undefined)

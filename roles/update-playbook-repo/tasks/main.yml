@@ -1,0 +1,16 @@
+---
+- uri:
+     url:              "{{ github_url }}repos/{{ prod_github_org }}{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
+     method:           PUT
+     validate_certs:   false
+     body_format:      json
+     validate_certs:   false
+     headers:
+       authorization:  "Basic {{ basic_token }}"
+     body:
+       message:        "This was created by Ansible "
+       committer:
+         name:         "{{ username }}"
+         email:        "{{ email }}"
+       content:        "{{ requirements.content }}"
+

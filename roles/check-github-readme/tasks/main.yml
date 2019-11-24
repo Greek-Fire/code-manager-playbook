@@ -1,0 +1,52 @@
+---
+- uri:
+     url:              "https://{{ github_fqdn }}/repos/{{ dev_github_org }}/{{ item.value.repo_name }}/contents/README.md?ref={{ item.value.version }}"
+     method:           GET
+     validate_certs:   false
+     status_code:      200,404
+     headers:
+       authorization:  "Bearer {{ github_personal_token }}"
+  no_log:              true
+  register:             readme
+  with_dict:           "{{ repos_dict }}"
+
+- debug:
+    var: readme
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    total_readme_count: "{{ readme | json_query(query999) }}"
+  vars:
+    query999:             "results[*].status"
+  no_log:               true
+  register:             security
+
+- debug:
+    var: security
+  when: (insecure_debug_logging | bool)
+
+
+- fail:
+    msg: 'One of the DEV repos does not have a README.md file'
+  when:
+    - (404 in total_readme_count)
+
+- uri:
+     url:              "https://{{ github_fqdn }}/repos/{{ dev_github_org }}/{{ dev_playbook_repo }}/contents/README.md?ref={{ dev_playbook_tag }}"
+     method:           GET
+     validate_certs:   false
+     status_code:      200,404
+     headers:
+       authorization:  "Bearer {{ github_personal_token }}"
+  no_log:              true
+  register:            pb_readme
+  ignore_errors:        true
+
+- debug:
+    var: readme
+  when: (insecure_debug_logging | bool)
+
+- fail:
+    msg: 'One of the DEV repos does not have a README.md file'
+  when:
+    - ('404' in pb_readme.status | lower)

@@ -1,0 +1,6 @@
+---
+ - name: 'Validate README.md'
+   hosts: localhost 
+   gather_facts: false
+   roles:
+    - role: /var/lib/awx/projects/code_manager/roles/check-github-readme 

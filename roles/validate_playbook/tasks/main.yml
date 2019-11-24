@@ -1,0 +1,17 @@
+---
+# tasks file for roles/validate_playbook
+ - uri:
+     url:                "{{ github_url }}repos/{{ prod_github_org }}{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
+     method:             GET 
+     validate_certs:     false
+     body_format:        json
+     validate_cers:      false
+     headers:
+       authorization:    "Basic {{ basic_token }}"
+   register:           readmepb
+   ignore_errors:      true
+
+ - fail:
+     msg:                 "{{ prod_github_org }}/{{ prod_playbook_repo }} version {{prod_playbook_tag }}"
+   when:                  readmepb.status != 200
+    

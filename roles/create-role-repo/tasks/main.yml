@@ -1,0 +1,45 @@
+---
+- name: "Check to see if the {{ item.value.repo_name }} exist in PROD"
+  uri:
+    url:            "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    method:         GET
+    validate_certs: false
+    status_code:    200
+    headers:
+      authorization:  "Bearer {{ github_personal_token }}"
+  no_log:           true
+  register:         github_response
+
+- debug:
+    var: github_response
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    github_prod_repo_names: "{{ github_response | json_query(query998) }}"
+  vars:
+    query998:              "json[*].name"
+
+- name: 'Build missing repos.'
+  uri:
+    url:               "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    method:            POST
+    status_code:       201,200
+    validate_certs:    false
+    body_format:       json
+    headers:
+       authorization:  "Bearer {{ github_personal_token }}"
+    body:
+      name:             "{{ item.value.repo_name }}"
+      description:      "{{ repo_description }}"
+      #private:          "{{ private_repo }}"
+      auto_init:        "{{ create_readme }}"
+      license_template: "{{ create_license }}"
+  no_log:               true
+  register:             post_response
+  with_dict:            "{{ repos_dict }}"
+  when:
+    - (item.value.repo_name not in github_prod_repo_names)
+
+- debug:
+    var: post_response
+  when: (insecure_debug_logging | bool)

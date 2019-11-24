@@ -1,0 +1,43 @@
+--- 
+- name: "Check to see if the {{ prod_playbook_repo }} exist"
+  uri:
+    url:            "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos?name={{ prod_playbook_repo }}"
+    method:         GET
+    validate_certs: false
+    status_code:    200
+    headers:
+      authorization:  "Bearer {{ github_personal_token }}"
+  no_log:           true
+  register:         github_response
+  
+- debug:
+    var: github_response
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    github_prod_pb_name: "{{ github_response | json_query(querygppi) | first | default('')}}"
+  vars:
+    querygppi:         "json[?name=='{{ prod_playbook_repo }}'].name"
+
+- uri:
+    url:               "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    method:            POST
+    status_code:       201,200
+    validate_certs:    false
+    body_format:       json
+    headers:
+       authorization:  "Bearer {{ github_personal_token }}"
+    body:
+      name:             "{{ prod_playbook_repo }}"
+      description:      "{{ repo_description }}"
+      #private:          "{{ private_repo }}"
+      auto_init:        "{{ create_readme }}"
+      license_template: "{{ create_license }}"
+  no_log:               true
+  register:             post_response
+  when: 
+      - (github_prod_pb_name is undefined) or 
+        (github_prod_pb_name == '') 
+- debug:
+    var: post_response
+  when: (insecure_debug_logging | bool)

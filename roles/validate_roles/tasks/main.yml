@@ -1,0 +1,4 @@
+---
+ - name: "These tasks with test for the README.md of each repo by tag"
+   include_tasks: validation.yml 
+   with_dict:     "{{ repos_dict }}"

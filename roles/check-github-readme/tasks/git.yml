@@ -1,0 +1,12 @@
+---
+- uri:
+    url:              "https://{{ tower_fqdn }}/api/v2/{{ item.path }}?search={{ item.endpoint }}"
+    method:           GET
+    status_code:      200,201
+    force_basic_auth: true
+    validate_certs:   false
+    user:             "{{ tower_username }}"
+    password:         "{{ tower_password }}"
+
+- debug:
+    var: "{{ test }}" 

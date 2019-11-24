@@ -1,0 +1,19 @@
+---
+- name: 'Grab {{ tower_organization_name }} ID' 
+  uri:
+    url:              "https://{{ tower_fqdn }}/api/v2/organizations/?name={{ tower_organization_name }}"
+    user:             "{{ tower_username }}"
+    password:         "{{ tower_password }}"
+    method:           GET
+    force_basic_auth: true
+    status_code:      200
+    validate_certs:   false
+  register:           tower_organization_response
+
+- fail:
+    msg:  '{{ tower_organization_name }} does not exist in Tower'
+  when: 
+    - tower_organization_response.json.results | length == 0
+
+- set_fact:
+    tower_organization_id: "{{ (tower_organization_response.json.results | first)['id'] }}"
