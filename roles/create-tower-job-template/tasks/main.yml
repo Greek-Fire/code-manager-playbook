@@ -61,3 +61,26 @@
       template_id:       "{{ temp_id | json_query(queryt) }}"
     when:
       - (template_id is undefined)
+
+  - name: "Update the {{ template_name }} template"
+    uri:
+      url:              "https://{{ tower_fqdn }}/api/v2/job_templates/40/"
+      method:           PATCH
+      force_basic_auth: true
+      validate_certs:   false
+      body_format:      json
+      user:             "{{ tower_username }}"
+      password:         "{{ tower_password }}"
+      body:
+        name:           "{{ template_name }}"
+        inventory:      "{{ inventory_id }}"
+        verbosity:      "{{ verbosity_level | default(0)}}"
+        project:        "{{ project_id }}"
+        job_type:       "{{ job_type | default('run') }}"
+        playbook:       "{{ playbook_name | default('main.yml') }}"
+        job_tags:       "{{ job_tags | default('') }}"
+        forks:          "{{ forks | default('0') }}"
+        skip_tags:      "{{ skip_job_tags | default('None') }}"
+        credential:     "{{ credential_id  }}"
+        become_enabled: "{{ become_enabled | default('false') }}"
+        survey_enabled: "{{ tower_survey_enabled }}"
