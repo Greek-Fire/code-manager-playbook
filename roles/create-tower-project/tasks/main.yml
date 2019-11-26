@@ -1,7 +1,7 @@
 ---
 - name: 'Grab the ID for the project' 
   uri:
-    url:              "https://{{ tower_fqdn }}/api/v2/projects/?name={{ tower_project_name }}"
+    url:              "https://{{ tower_fqdn }}/api/v2/projects?name={{ tower_project_name }}"
     user:             "{{ tower_username }}"
     password:         "{{ tower_password }}"
     method:           GET
@@ -11,20 +11,31 @@
   register: project_id_response
 
 - set_fact:
-    inventory_id: "{{ (project_id_response.json.results | first)['id'] }}"
+    project_id:  "{{ (project_id_response.json.results | first)['id'] }}"
+    patch_test1: "{{ (project_id_response.json.results | first)['scm_branch'] }}"
+    patch_test2: "{{ (project_id_response.json.results | first)['scm_type'] }}"
+    patch_test3: "{{ (project_id_response.json.results | first)['organization'] }}"
+    patch_test4: "{{ (project_id_response.json.results | first)['credential'] }}"
+    patch_test5: "{{ (project_id_response.json.results | first)['scm_update_on_launch'] }}"
   when:
     - (project_id_response.json.results | length == 1)
 
 - name: 'Create the project, it does not exist' 
   uri:
-    url:               "https://{{ tower_fqdn }}/api/v2/projectss/"
+    url:               "https://{{ tower_fqdn }}/api/v2/projects/"
     user:              "{{ tower_username }}"
     password:          "{{ tower_password }}"
     method:            POST
     body:
-      name:            "{{ tower_inventory_name }}"
-      organization:    "{{ tower_organization_id }}"
-      description:     "{{ tower_description }}"
+      name:                 "{{ tower_project_name }}"
+      organization:         "{{ tower_organization_id }}"
+      description:          "{{ tower_description }}"
+      credential:           "{{ tower_credential_id }}"
+      scm_type:             'git' 
+      scm_url:              "{{ prod_playbook_url }}"
+      scm_branch:           "{{ prod_playbook_tag }}"
+      scm_update_on_launch: true
+    survey_enabled:    "{{ create_survey | bool }}"
     force_basic_auth:  true
     status_code:       201
     body_format:       json
@@ -32,11 +43,40 @@
   changed_when:        true
   register: new_project_id_response 
   when:
-    - (project_id_response.json.results | length < 1)
     - (project_id is undefined)
+    - (project_id_response.json.results | length < 1)
+      
 
-  set_fact:
+- set_fact:
     project_id: "{{ new_project_id_response.json['id'] }}"
   when:
-    - project_id is undefined
+    - (project_id is undefined)
+    - (project_id_response.json.results | length < 1)
 
+- name: 'Conditonal test'
+  set_fact:
+     update_project_test: "{{ 'pass' if patch_test1 == prod_playbook_tag and patch_test2 == 'git' and patch_test3 == tower_organization_id and patch_test4 == tower_credential_id and patch_test5 == true else 'fail' }}"
+
+- name: 'Update the project'
+  uri:
+    url:               "https://{{ tower_fqdn }}/api/v2/projects/{{ (project_id_response.json.results | first)['id'] }}/"
+    user:              "{{ tower_username }}"
+    password:          "{{ tower_password }}"
+    method:            PATCH
+    body:  
+      name:                 "{{ tower_project_name }}"
+      organization:         "{{ tower_organization_id }}"
+      description:          "{{ tower_description }}"
+      credential:           "{{ tower_credential_id }}"
+      scm_type:             'git'
+      scm_url:              "{{ prod_playbook_url }}"
+      scm_branch:           "{{ prod_playbook_tag }}"
+      scm_update_on_launch: true
+    survey_enabled:    "{{ create_survey | bool }}"
+    force_basic_auth:  true
+    status_code:       200
+    body_format:       json
+    validate_certs:    false
+  changed_when:        true
+  register: update_project_id_response
+  when: update_project_test == 'fail'

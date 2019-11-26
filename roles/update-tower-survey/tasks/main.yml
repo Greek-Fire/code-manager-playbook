@@ -1,0 +1,31 @@
+---
+- block:
+  - set_fact:
+      t_survey_path: "{{ '/tmp/' + lookup('pipe','date +%Y%m%d%H%M%S') + '.json' }}" 
+
+  - name: 'Create Survey'
+    template:
+      src:    'survey.j2' 
+      dest:   "{{ t_survey_path }}"
+
+  - name: "Create the {{ tower_template_name }} survey"
+    uri:
+      url:              "https://{{ tower_fqdn }}/api/v2/job_templates/{{ template_id }}/survey_spec/"
+      method:           POST
+      status_code:      200
+      force_basic_auth: true
+      validate_certs:   false
+      body_format:      json
+      user:             "{{ tower_username }}"
+      password:         "{{ tower_password }}"
+      body:
+        name:          "{{ tower_template_name }}"
+        description:   "{{ tower_survey_description }}"
+        spec:          "{{ lookup('file', '{{ t_survey_path }}') | from_yaml }}"
+
+  - name: 'Cleaning'
+    file:
+      path: "/tmp/{{ t_survey_path }}"
+      state: absent
+  when:
+   - (create_survey == true)

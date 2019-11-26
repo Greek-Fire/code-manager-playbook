@@ -13,7 +13,47 @@
 - fail:
     msg:  '{{ tower_organization_name }} does not exist in Tower'
   when: 
-    - tower_organization_response.json.results | length == 0
+    - (tower_organization_response.json.results | length < 1)
 
 - set_fact:
     tower_organization_id: "{{ (tower_organization_response.json.results | first)['id'] }}"
+
+- name: 'Grab {{ tower_inventory_name }} ID'
+  uri:
+    url:              "https://{{ tower_fqdn }}/api/v2/inventories/?name={{ tower_inventory_name }}"
+    user:             "{{ tower_username }}"
+    password:         "{{ tower_password }}"
+    method:           GET
+    force_basic_auth: true
+    status_code:      200
+    validate_certs:   false
+  register:           tower_inventory_response
+
+- fail:
+    msg:  '{{ tower_inventory_name }} does not exist in Tower'
+  when:
+    - (tower_inventory_response.json.results | length < 1)
+
+- set_fact:
+    tower_inventory_id: "{{ (tower_inventory_response.json.results | first)['id'] }}"
+
+- name: 'Grab {{ tower_credential_name }}'
+  uri:
+    url:              "https://{{ tower_fqdn }}/api/v2/credentials/?name={{ tower_credential_name }}"
+    user:             "{{ tower_username }}"
+    password:         "{{ tower_password }}"
+    method:           GET
+    force_basic_auth: true
+    status_code:      200
+    validate_certs:   false
+  register: tower_credential_response
+
+- set_fact:
+    tower_credential_id: "{{ (tower_credential_response.json.results | first)['id'] }}"
+  when:
+    - (tower_credential_response.json.results | length == 1)
+
+- fail:
+    msg:  '{{ tower_credential_name }} does not exist in Tower'
+  when:
+    - (tower_credential_response.json.results | length < 0)

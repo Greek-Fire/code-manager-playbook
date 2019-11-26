@@ -4,3 +4,7 @@
    gather_facts: false
    roles:
     - role: /var/lib/awx/projects/code_manager/roles/check-github-readme 
+    - role: /var/lib/awx/projects/code_manager/roles/grab-tower-ids 
+    - role: /var/lib/awx/projects/code_manager/roles/create-github-role-repo 
+    - role: /var/lib/aws/projects/code_manager/roles/promote-dev-github-role-repo
+    - role: /var/lib/awx/projects/code_manager/roles/create-github-playbook-repos

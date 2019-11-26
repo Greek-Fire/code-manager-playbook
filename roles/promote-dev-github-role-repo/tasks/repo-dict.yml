@@ -1,0 +1,18 @@
+---
+    - set_fact:
+        target_dest: "{{ tmp_git_repo_path }} lookup('pipe','date +%Y%m%d%H%M%S') + tmp_git_repo }}"
+
+    - git:
+        repo:    "{{ item.value.url }}"
+        bare:    "{{ item.value.bare }}"
+        dest:    "{{ target_dest }}"
+        version: "{{ item.value.version }}"
+
+    - shell: |
+         cd       "{{ target_dest }}"
+         git push --mirror "{{ item.value.target_org_repo }}"
+
+    - file:
+        src: "{{ target_dest }}"
+        state: absent  
+  

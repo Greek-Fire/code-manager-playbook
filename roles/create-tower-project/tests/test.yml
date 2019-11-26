@@ -1,0 +1,7 @@
+---
+ - hosts: localhost
+   gather_facts: false
+
+   roles:
+    - /var/lib/awx/projects/code-manager-playbook/roles/grab-tower-ids
+    - /var/lib/awx/projects/code-manager-playbook/roles/create-tower-project

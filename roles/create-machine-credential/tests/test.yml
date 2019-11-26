@@ -1,6 +1,0 @@
----
- - hosts: localhost
-   gather_facts: false
-
-   roles:
-    - /var/lib/awx/projects/code_manager/roles/create-machine-credential 

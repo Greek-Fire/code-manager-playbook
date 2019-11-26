@@ -1,4 +1,12 @@
 ---
+- template: 
+    src:    requirements.j2
+    dest:   "{{ tmp_git_repo_path }}requirements.yml"
+
+- slurp:
+    src:    "{{ tmp_git_repo_path }}requirements.yml"
+  register:  requirements 
+
 - uri:
      url:              "{{ github_url }}repos/{{ prod_github_org }}{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
      method:           PUT

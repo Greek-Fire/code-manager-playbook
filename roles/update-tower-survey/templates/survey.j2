@@ -1,0 +1,20 @@
+  [
+    {% for item in survey_dict.values() %}
+    {
+        "type": "{{ item.type }}",
+        "question_name": "{{ item.question_name }}",
+        "question_description": "{{ item.question_description }}",
+        "variable": "{{ item.variable }}",
+        "choices": {{ item.choices | list | default("") }},
+        "min": {{ item.min | default("") }},
+        "max": {{ item.max | default("") }},
+        "required": {{ item.required }},
+        "default": "{{ item.default | default("") }}" 
+    
+      {% if loop.last %}
+    }
+      {% else %}
+    },
+      {% endif %} 
+    {% endfor %}
+  ]

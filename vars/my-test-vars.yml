@@ -1,0 +1,73 @@
+---
+github_fqdn:           'api.github.com'
+prod_github_org:       'prod-test-21'
+dev_github_org:        'dev-test-21'
+email:                 'bob@nothere.com'
+prod_playbook_repo:    'prod-playbook'
+prod_playbook_url:     'git@github.com:prod-test-21/prod-playbook.git'
+dev_playbook_repo:     'dev-playbook'
+dev_playbook_tag:      'master'
+prod_playbook_tag:     'master'
+token:                 '4778a4121adba600766783f8572efca22c063155'
+insecure_debug_logging: false 
+github_personal_token: '684361d96dcf60954ae8eda1b0e8bd28342e874b' 
+
+repos_dict:
+  repo1:
+    url:              'git@github.com:dev-test-21/test.git' 
+    repo_name:        'test'
+    bare:             true
+    version:          'v1.0'
+    scm:              'git'
+    target_org_repo:  'git@github.com:prod-test-21/test.git'
+  repos2:
+     repo_name:       'test1234'
+
+
+#Tower Vars
+tower_fqdn:                 'at.example.net'
+tower_username:             'admin'
+tower_password:             'redhat'
+tower_template_name:        'cibc'
+tower_inventory_name:       'bob'
+tower_job_tags:             'test,test1'
+tower_credential_name:      'hubby'
+tower_organization_name:     'Default'
+tower_description:           'This was created by Ansible'
+tower_project_name:         'cibc'
+
+#survey test
+tower_survey_enable:         'true'
+tower_survey_description: 'Created by Ansible'
+create_survey: true
+
+#survey entires
+survey_dict:
+  entry1:
+    type:           'text'
+    question_name: 'What is your favoite color?'
+    question_description: 'Tell me your favorite color...'
+    variable:             'color'
+    choices:              ""
+    min:                  ""
+    max:                  ""
+    required:             'true'
+    default:              'not red.'
+  multi_select:
+    type:                 'multiselect'
+    question_name:        'Choices'
+    question_description: 'Pick a color'
+    variable:             'multi_color'
+    choices:
+      - black
+      - green
+    min:                  ""
+    max:                  ""
+    required:             'true'
+    
+
+#Create Repo
+repo_description:           'Ansible created this repo' 
+#private_repo:          'false'
+create_readme:         'true'
+create_license:        'gpl-3.0'
