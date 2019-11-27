@@ -1,2 +1,2 @@
-tmp_git_repo_path: '/tmp'
+tmp_git_repo_path: '/tmp/'
 tmp_git_repo:      'temp.git'

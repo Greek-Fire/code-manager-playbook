@@ -55,9 +55,9 @@ tower_project_name:         'cibc'
 tower_become_enabled:       'false'
 
 #survey test
-tower_survey_enable:         'true'
+tower_survey_enable:         'false'
 tower_survey_description:    'Created by Ansible'
-create_survey:               true
+create_survey:               false
 
 #survey entires
 survey_dict:
