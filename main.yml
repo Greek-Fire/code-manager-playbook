@@ -1,6 +1,6 @@
 ---
  - name: 'Code promotion'
-   hosts: localhost 
+   hosts: all 
    gather_facts: false
    roles:
     - role: check-github-readme 
