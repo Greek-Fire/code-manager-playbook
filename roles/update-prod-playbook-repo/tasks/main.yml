@@ -1,0 +1,43 @@
+---
+
+- name: "Check to see if the {{ prod_playbook_repo }} exist"
+  uri:
+    url:            "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/{{ prod_playbook_repo }}/contents/repos/requirements.yml?=ref{{ prod_playbook_tag }}"
+    method:         GET
+    validate_certs: false
+    status_code:    200,404
+    headers:
+      authorization:  "Bearer {{ prod_github_personal_token }}"
+  no_log:           true
+  register:         github_req_response
+
+- debug:
+    var: github_req_response
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    github_prod_pb_sha: "{{ github_response | json_query(query970) | first | default('')}}"
+  vars:
+    query970:         "json[?name=='{{ prod_playbook_repo }}'].sha"
+
+
+- uri:
+     url:              "https://{{ prod_github_fqdn }}/repos/{{ prod_github_org }}/{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
+     method:           PUT
+     status_code:      201,200
+     validate_certs:   false
+     body_format:      json
+     validate_certs:   false
+     headers:
+       authorization:  "Bearer {{ prod_github_personal_token }}"
+     body:
+       message:        "This was created by Ansible "
+       committer:
+         name:         "{{ prod_github_username }}"
+         email:        "{{ email }}"
+       content:        "{{ requirements.content }}"
+       sha:            "{{ github_prod_pb_sha }}"
+  no_log:             true
+  register:           put_response
+  when:
+  - (github_prod_pb_sha is defined)

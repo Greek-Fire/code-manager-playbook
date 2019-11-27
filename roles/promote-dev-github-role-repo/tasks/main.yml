@@ -1,5 +1,5 @@
- - name: 'This task will loop over the repo, or repos, that will be promoted to PROD.'
-   include_tasks: repo_dict.yml
-   with_dict: "{{ repos_dict }}"
-   when: 
-    - (item.value.repo_name in github_prod_repo_names)
+---
+
+- name: 'This task will loop over the repo, or repos, that will be promoted to PROD.'
+  include_tasks: repo-dict.yml
+  with_dict: "{{ repos_dict }}"

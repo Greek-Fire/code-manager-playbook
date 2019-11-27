@@ -3,8 +3,13 @@
    hosts: localhost 
    gather_facts: false
    roles:
-    - role: /var/lib/awx/projects/code_manager/roles/check-github-readme 
-    - role: /var/lib/awx/projects/code_manager/roles/grab-tower-ids 
-    - role: /var/lib/awx/projects/code_manager/roles/create-github-role-repo 
-    - role: /var/lib/aws/projects/code_manager/roles/promote-dev-github-role-repo
-    - role: /var/lib/awx/projects/code_manager/roles/create-github-playbook-repos
+    - role: /var/lib/awx/projects/code-manager/roles/check-github-readme 
+    - role: /var/lib/awx/projects/code-manager/roles/grab-tower-ids 
+    - role: /var/lib/awx/projects/code-manager/roles/create-github-role-repo 
+    - role: /var/lib/awx/projects/code-manager/roles/promote-dev-github-role-repo
+    - role: /var/lib/awx/projects/code-manager/roles/create-github-playbook-repo
+    - role: /var/lib/awx/projects/code-manager/roles/promote-dev-github-playbook-repo
+    - role: /var/lib/awx/projects/code-manager/roles/update-prod-playbook-repo
+    - role: /var/lib/awx/projects/code-manager/roles/create-tower-project
+    - role: /var/lib/awx/projects/code-manager/roles/create-tower-job-template
+    - role: /var/lib/awx/projects/code-manager/roles/update-tower-job-template-survey

@@ -1,12 +1,12 @@
 ---
-- name: "Check to see if the {{ item.value.repo_name }} exist in PROD"
+- name: "Check to see if the '{{ item.value.repo_name }}' exist in PROD"
   uri:
-    url:            "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    url:            "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/repos"
     method:         GET
     validate_certs: false
     status_code:    200
     headers:
-      authorization:  "Bearer {{ github_personal_token }}"
+      authorization:  "Bearer {{ prod_github_personal_token }}"
   no_log:           true
   register:         github_response
 
@@ -21,20 +21,20 @@
 
 - name: 'Build missing repos.'
   uri:
-    url:               "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    url:               "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/repos"
     method:            POST
     status_code:       201,200
     validate_certs:    false
     body_format:       json
     headers:
-       authorization:  "Bearer {{ github_personal_token }}"
+       authorization:  "Bearer {{ prod_github_personal_token }}"
     body:
       name:             "{{ item.value.repo_name }}"
       description:      "{{ repo_description }}"
       #private:          "{{ private_repo }}"
       auto_init:        "{{ create_readme }}"
       license_template: "{{ create_license }}"
-  no_log:               true
+  #no_log:               true
   register:             post_response
   with_dict:            "{{ repos_dict }}"
   when:

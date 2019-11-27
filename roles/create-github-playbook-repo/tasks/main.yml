@@ -1,13 +1,25 @@
 --- 
+- template:
+    src:    requirements.j2
+    dest:   "{{ tmp_git_repo_path }}requirements.yml"
+
+- slurp:
+    src:    "{{ tmp_git_repo_path }}requirements.yml"
+  register:  requirements
+
+- file:
+    path: "{{ tmp_git_repo_path }}requirements.yml"
+    state: absent
+
 - name: "Check to see if the {{ prod_playbook_repo }} exist"
   uri:
-    url:            "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos?name={{ prod_playbook_repo }}"
+    url:            "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/repos?name={{ prod_playbook_repo }}"
     method:         GET
     validate_certs: false
     status_code:    200
     headers:
-      authorization:  "Bearer {{ github_personal_token }}"
-  no_log:           true
+      authorization:  "Bearer {{ prod_github_personal_token }}"
+  #no_log:           true
   register:         github_response
   
 - debug:
@@ -20,20 +32,20 @@
     querygppi:         "json[?name=='{{ prod_playbook_repo }}'].name"
 
 - uri:
-    url:               "https://{{ github_fqdn }}/orgs/{{ prod_github_org }}/repos"
+    url:               "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/repos"
     method:            POST
     status_code:       201,200
     validate_certs:    false
     body_format:       json
     headers:
-       authorization:  "Bearer {{ github_personal_token }}"
+       authorization:  "Bearer {{ prod_github_personal_token }}"
     body:
       name:             "{{ prod_playbook_repo }}"
       description:      "{{ repo_description }}"
       #private:          "{{ private_repo }}"
       auto_init:        "{{ create_readme }}"
       license_template: "{{ create_license }}"
-  no_log:               true
+  #no_log:               true
   register:             post_response
   when: 
       - (github_prod_pb_name is undefined) or 
@@ -43,22 +55,28 @@
   when: (insecure_debug_logging | bool)
 
 - uri:
-     url:              "{{ github_url }}repos/{{ prod_github_org }}{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
+     url:              "https://{{ prod_github_fqdn }}/repos/{{ prod_github_org }}/{{ prod_playbook_repo }}/contents/roles/requirements.yml?=ref{{ prod_playbook_tag }}"
      method:           PUT
+     status_code:      201,200
      validate_certs:   false
      body_format:      json
      validate_certs:   false
      headers:
-       authorization:  "Basic {{ basic_token }}"
+       authorization:  "Bearer {{ prod_github_personal_token }}"
      body:
        message:        "This was created by Ansible "
        committer:
-         name:         "{{ username }}"
+         name:         "{{ prod_github_username }}"
          email:        "{{ email }}"
        content:        "{{ requirements.content }}"
-   no_log:             true
-   register:           put_response
+  #no_log:             true
+  register:           put_response
+  when:
+      - (github_prod_pb_name is undefined) or
+        (github_prod_pb_name == '')
 
 - debug:
     var: put_response
   when: (insecure_debug_logging | bool)
+
+
