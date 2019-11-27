@@ -1,8 +1,8 @@
 ---
 {% for item in  repos_dict.values()  %}  
  - name:     {{ item.repo_name }}
-   src:      {{ item.url }}
+   src:      {{ item.target_org_repo }}
    scm:      {{ item.scm }}
-   verstion: {{ item.version }}
+   version:  {{ item.version }}
 
 {% endfor %}
