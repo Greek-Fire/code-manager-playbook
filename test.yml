@@ -1,5 +1,5 @@
  - name: 'Code promotion'
-   hosts: at.example.net
+   hosts: localhost 
    gather_facts: false
    roles:
     - role: check-github-readme

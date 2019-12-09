@@ -25,7 +25,7 @@
 
   - name: 'Cleaning'
     file:
-      path: "/tmp/{{ t_survey_path }}"
+      path: "{{ t_survey_path }}"
       state: absent
   when:
    - (create_survey == true)

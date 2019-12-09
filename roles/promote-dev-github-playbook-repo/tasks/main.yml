@@ -1,7 +1,7 @@
 ---
 - name: 'Promote DEV playbook to PROD'
   set_fact:
-    target_dest_pb: "{{ tmp_git_repo_path + lookup('pipe','date +%Y%m%d%H%M%S') }}/{{ tmp_git_repo }}"
+    target_dest_pb: "{{ '/tmp/' + lookup('pipe','date +%Y%m%d%H%M%S') }}"
 
 - git:
     repo:     "{{ dev_playbook_url }}"
@@ -10,7 +10,7 @@
     version:  "{{ prod_playbook_tag }}"
 
 - shell: |
-       cd                "{{ target_dest_pb }}"
+       cd                "{{ target_dest_pb }}{{ tmp_git_repo }}"
        git push --mirror "{{ prod_playbook_url }}"
 
 - file:
