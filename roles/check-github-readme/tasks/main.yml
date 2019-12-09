@@ -6,6 +6,7 @@
 - fail:
      msg: Duplicate were found
   when: repo_names_test != (repo_names_test | unique)
+        repo_url_test != (repo_url_test | unique)
   
 - uri:
      url:              "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ item.value.repo_name }}/contents/README.md?ref={{ item.value.version }}"
