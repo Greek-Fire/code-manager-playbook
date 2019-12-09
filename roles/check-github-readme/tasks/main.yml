@@ -1,4 +1,12 @@
 ---
+- set_fact:
+    repo_names_test: "{{ repos_dict | json_query('*.repo_name') }}"
+    repo_url_test: "{{ repos_dict | json_query('*.url') }}"
+
+- fail:
+     msg: Duplicate were found
+  when: repo_names_test != (repo_names_test | unique)
+  
 - uri:
      url:              "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ item.value.repo_name }}/contents/README.md?ref={{ item.value.version }}"
      method:           GET
