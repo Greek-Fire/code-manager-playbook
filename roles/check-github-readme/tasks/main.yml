@@ -5,7 +5,8 @@
 
 - fail:
      msg: Duplicate were found
-  when: repo_names_test != (repo_names_test | unique)
+  when: 
+        repo_names_test != (repo_names_test | unique) or
         repo_url_test != (repo_url_test | unique)
   
 - uri:
