@@ -7,33 +7,18 @@ prod_github_org:            'prod-test-21'
 dev_github_org:             'dev-test-21'
 email:                      'bob@nothere.com'
 prod_playbook_repo:         'prod-playbook'
-prod_playbook_url:          'git@github.com:prod-test-21/prod-playbook.git'
 dev_playbook_repo:          'dev-playbook'
 dev_playbook_tag:           'master'
 prod_playbook_tag:          'master'
-insecure_debug_logging:     false 
-dev_github_personal_token:  '2d24278065871bf292ec9f5e6bf09e1d729bca12' 
-prod_github_personal_token: '2d24278065871bf292ec9f5e6bf09e1d729bca12'
+insecure_debug_logging:     true 
+dev_github_personal_token:  '62e7e5b8613e02f5b5d5699e46488f0d8fbcd9bc'
+prod_github_personal_token: '62e7e5b8613e02f5b5d5699e46488f0d8fbcd9bc'
 prod_github_username:       'theredgreek'
+dev_github_tag:             'master'
 
+dev_role_repos:
+- test
 
-#promote-dev-github-role-repo
-repos_dict:
-  repo1:
-    url:              'git@github.com:dev-test-21/test.git' 
-    repo_name:        'test'
-    bare:              true
-    version:          'master'
-    scm:              'git'
-    target_org_repo:  'git@github.com:prod-test-21/test.git'
-  repos2:
-    url:              'git@github.com:dev-test-21/test1.git'
-    repo_name:        'test1'
-    bare:             true
-    version:          'master'
-    scm:              'git'
-    target_org_repo:  'git@github.com:prod-test-21/test1.git'
-     
 #Promote-dev-github-playbook-repo
 dev_playbook_url:      'git@github.com:dev-test-21/dev-playbook.git'
 dev_bare:              'true'

@@ -1,0 +1,15 @@
+---
+ - name: 'Code promotion'
+   hosts: all 
+   gather_facts: false
+   roles:
+    - role: check-github-readme 
+    - role: grab-tower-ids 
+    - role: create-github-role-repo 
+    - role: promote-dev-github-role-repo
+    - role: create-github-playbook-repo
+    - role: promote-dev-github-playbook-repo
+    - role: update-prod-playbook-repo
+    - role: create-tower-project
+    - role: create-tower-job-template
+    - role: update-tower-job-template-survey

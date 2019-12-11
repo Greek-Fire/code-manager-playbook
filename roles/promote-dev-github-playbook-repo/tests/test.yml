@@ -1,0 +1,7 @@
+---
+- name: test
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: /var/lib/awx/projects/WM-code-manager/roles/create-github-playbook-repo
+    - role: /var/lib/awx/projects/WM-code-manager/roles/promote-dev-github-playbook-repo

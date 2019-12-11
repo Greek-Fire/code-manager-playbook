@@ -1,0 +1,39 @@
+---
+- uri:
+     url:              "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ item }}/contents?ref={{ dev_github_tag }}"
+     method:           GET
+     validate_certs:   false
+     status_code:      200
+     headers:
+       authorization:  "Bearer {{ dev_github_personal_token }}"
+  #no_log:              true
+  register:            get_sha
+
+- debug:
+    var: get_sha
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    sha_list:     "{{ get_sha | json_query(query898) }}"
+    name_list:     "{{ get_sha | json_query(query897) }}"
+  vars:
+    query898:             "json[?size > `0`].sha"
+    query897:             "json[?size > `0`].name"
+  #no_log:                 true
+  register:               security
+
+- debug:
+    var: security
+  when: (insecure_debug_logging | bool)
+
+- uri:
+     url:              "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ item }}/contents/{{ item.name_list }}?ref={{ dev_github_tag }}"
+     method:           GET
+     validate_certs:   false
+     status_code:      200
+     headers:
+       authorization:  "Bearer {{ dev_github_personal_token }}"
+  #no_log:              true
+  register:            get_cont
+  with_items:          "{{ name_list }}"
+

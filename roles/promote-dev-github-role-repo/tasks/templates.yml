@@ -1,0 +1,100 @@
+---
+- name: "Grab top level templates" 
+  uri:
+    url:            "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ dev_roles }}/contents/templates?ref=master"
+    method:         GET
+    validate_certs: false
+    status_code:    200,404
+    headers:
+      authorization:  "Bearer {{ dev_github_personal_token }}"
+  no_log:           true
+  register:         tl_dev_names
+
+- debug:
+    var: tl_dev_names
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    tl_dev_list: "{{ tl_dev_names | json_query(query970) }}"
+  vars:
+    query970:         "json[?size > `0`].name"
+  when:
+   - tl_dev_names.status != 404
+
+- uri:
+    url:            "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ dev_roles }}/contents/templates/{{ item }}?ref=master"
+    method:         GET
+    validate_certs: false
+    status_code:    200,404
+    headers:
+      authorization:  "Bearer {{ dev_github_personal_token }}"
+  no_log:           true
+  register:         tl_dev_cont
+  loop:             "{{ tl_dev_list }}"
+  when:
+    - (tl_dev_names.status != 404)
+    - (tl_dev_list | length > 0)
+
+- debug:
+    var: tl_dev_cont
+  when: (insecure_debug_logging | bool)
+
+- debug:
+    var: tl_dev_cont.results
+
+- set_fact:
+    tl_dev_cont_list: "{{ tl_dev_cont.results | json_query(query771)  | trim }}"
+  vars:               
+    query771:         "[?json.content].json.content"
+ 
+- uri:
+    url:            "https://{{ prod_github_fqdn }}/repos/{{ prod_github_org }}/{{ dev_roles }}/contents/templates?ref=master"
+    method:         GET
+    validate_certs: false
+    status_code:    200,404
+    headers:
+      authorization:  "Bearer {{ prod_github_personal_token }}"
+  no_log:           true
+  register:         tl_prod_names
+  when:
+   - tl_dev_cont_list | length > 0
+
+- debug:
+    var: tl_prod_names
+  when: (insecure_debug_logging | bool)
+
+- set_fact:
+    tl_prod_sha_list: "{{ tl_prod_names | json_query(query972) }}"
+  vars:
+    query972:         "json[?size > `0`].sha"
+  when:
+   - tl_dev_cont_list | length > 0
+
+- uri:
+     url:              "https://{{ prod_github_fqdn }}/repos/{{ prod_github_org }}/{{ dev_roles }}/contents/templates/{{ item.0 }}?=ref{{ prod_playbook_tag }}"
+     method:           PUT
+     status_code:      201,200
+     validate_certs:   false
+     body_format:      json
+     validate_certs:   false
+     headers:
+       authorization:  "Bearer {{ prod_github_personal_token }}"
+     body:
+       message:        "This was created by Ansible "
+       committer:
+         name:         "{{ prod_github_username }}"
+         email:        "{{ email }}"
+       content:        "{{ item.2 }}"
+       sha:            "{{ item.1 }}"
+  no_log:             true
+  with_together:               
+   - "{{ tl_dev_list }}"
+   - "{{ tl_prod_sha_list }}"
+   - "{{ tl_dev_cont_list }}" 
+  register:           put_response
+  when:
+   - tl_dev_cont_list | length > 0
+
+- debug:
+    var: put_response
+  when: (insecure_debug_logging | bool) and (tl_dev_cont_list | length > 0)

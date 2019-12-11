@@ -1,18 +1,10 @@
 ---
-- name: 'Promote DEV playbook to PROD'
-  set_fact:
-    target_dest_pb: "{{ '/tmp/' + lookup('pipe','date +%Y%m%d%H%M%S') }}"
+- name: 'Promote top-level playbook repos from dev to prod organization.'
+  include_tasks: top-level.yml
 
-- git:
-    repo:     "{{ dev_playbook_url }}"
-    bare:     "{{ dev_bare }}"
-    dest:     "{{ target_dest_pb }}"
-    version:  "{{ prod_playbook_tag }}"
+- name: 'Promote playbook directories from dev to prod organization.'
+  include_tasks: defaults.yml
+  loop: "{{ play_dev_dirs }}"
+  loop_control:
+    loop_var: dev_play_dirs 
 
-- shell: |
-       cd                "{{ target_dest_pb }}{{ tmp_git_repo }}"
-       git push --mirror "{{ prod_playbook_url }}"
-
-- file:
-    path: "{{ target_dest_pb }}"
-    state: absent

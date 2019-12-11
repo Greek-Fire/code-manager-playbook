@@ -1,0 +1,6 @@
+---
+- name: test
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: /var/lib/awx/projects/WM-code-manager/roles/promote-dev-github-role-repo

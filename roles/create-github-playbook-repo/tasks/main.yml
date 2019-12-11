@@ -1,15 +1,4 @@
 --- 
-- template:
-    src:    requirements.j2
-    dest:   "{{ tmp_git_repo_path }}requirements.yml"
-
-- slurp:
-    src:    "{{ tmp_git_repo_path }}requirements.yml"
-  register:  requirements
-
-- file:
-    path: "{{ tmp_git_repo_path }}requirements.yml"
-    state: absent
 
 - name: "Check to see if the {{ prod_playbook_repo }} exist"
   uri:
@@ -45,7 +34,7 @@
       #private:          "{{ private_repo }}"
       auto_init:        "{{ create_readme }}"
       license_template: "{{ create_license }}"
-  no_log:               true
+  #no_log:               true
   register:             post_response
   when: 
       - (github_prod_pb_name is undefined) or 
@@ -69,7 +58,7 @@
          name:         "{{ prod_github_username }}"
          email:        "{{ email }}"
        content:        "{{ requirements.content }}"
-  no_log:             true
+  #no_log:             true
   register:           put_response
   when:
       - (github_prod_pb_name is undefined) or

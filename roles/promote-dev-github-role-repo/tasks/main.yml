@@ -1,5 +1,49 @@
 ---
+- name: 'Promote repos from dev to prod organization'
+  include_tasks: top-level.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
 
-- name: 'This task will loop over the repo, or repos, that will be promoted to PROD.'
-  include_tasks: repo-dict.yml
-  with_dict: "{{ repos_dict }}"
+- name: 'Promote repos defaults dir from dev to prod organization'
+  include_tasks: defaults.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos defaults dir from dev to prod organization'
+  include_tasks: files.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos from dev to prod organization'
+  include_tasks: handlers.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos defaults dir from dev to prod organization'
+  include_tasks: meta.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos defaults dir from dev to prod organization'
+  include_tasks: tasks.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos from dev to prod organization'
+  include_tasks: templates.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+
+- name: 'Promote repos defaults dir from dev to prod organization'
+  include_tasks: vars.yml
+  loop: "{{ dev_role_repos }}"
+  loop_control:
+    loop_var: dev_roles
+

@@ -1,2 +1,10 @@
-tmp_git_repo_path: '/tmp/'
-tmp_git_repo:      '/temp.git'
+play_dev_dirs:
+- defaults
+- files
+- handlers
+- meta
+- roles
+- tasks
+- templates
+- tests
+- vars

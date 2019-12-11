@@ -1,14 +1,12 @@
 ---
+
 - set_fact:
-    repo_names_test: "{{ repos_dict | json_query('*.repo_name') }}"
-    repo_url_test: "{{ repos_dict | json_query('*.url') }}"
+    repo_names: "{{ repos_dict | json_query('*.repo_name') }}"
 
 - fail:
-     msg: Duplicate were found
-  when: 
-        repo_names_test != (repo_names_test | unique) or
-        repo_url_test != (repo_url_test | unique)
-  
+    msg: Duplicate repo names found
+  when: repo_names != (repo_names | unique)
+
 - uri:
      url:              "https://{{ dev_github_fqdn }}/repos/{{ dev_github_org }}/{{ item.value.repo_name }}/contents/README.md?ref={{ item.value.version }}"
      method:           GET
@@ -16,7 +14,7 @@
      status_code:      200,404
      headers:
        authorization:  "Bearer {{ dev_github_personal_token }}"
-  #no_log:              true
+  no_log:              true
   register:            readme
   with_dict:           "{{ repos_dict }}"
 

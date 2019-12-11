@@ -1,6 +1,5 @@
 ---
-
-- name: "Check to see if the {{ prod_playbook_repo }} exist"
+- name: "Check to see if the rquirements.yml file in {{ prod_playbook_repo }} exist"
   uri:
     url:            "https://{{ prod_github_fqdn }}/orgs/{{ prod_github_org }}/{{ prod_playbook_repo }}/contents/repos/requirements.yml?=ref{{ prod_playbook_tag }}"
     method:         GET
