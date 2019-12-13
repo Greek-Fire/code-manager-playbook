@@ -14,10 +14,10 @@
    roles:
      - role: promote-dev-github-playbook-repo
      
-- name: 'Code promotion'
-  hosts: localhost
-  gather_facts: false
-  roles:
+ - name: 'Code promotion'
+   hosts: localhost
+   gather_facts: false
+   roles:
     - role: update-prod-playbook-repo
     - role: create-tower-project
     - role: create-tower-job-template
