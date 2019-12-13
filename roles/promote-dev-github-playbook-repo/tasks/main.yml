@@ -9,8 +9,7 @@
     dest:     "{{ target_dest_pb }}"
     version:  "{{ prod_playbook_tag }}"
 
-- becom: true
-  shell: |
+- shell: |
        cd                "{{ target_dest_pb }}{{ tmp_git_repo }}"
        git push --mirror "{{ prod_playbook_url }}"
 
