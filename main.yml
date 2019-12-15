@@ -1,6 +1,6 @@
 ---
  - name: 'Code promotion'
-   hosts: localhost
+   hosts: "{{ tower_fqdn }}"
    gather_facts: false
    roles:
      - role: check-github-readme 
@@ -9,14 +9,13 @@
      - role: promote-dev-github-role-repo
      - role: create-github-playbook-repo
      
- - become: true
-   hosts: localhost
+ - hosts: "{{ tower_fqdn }}"
    become: true
    roles:
      - role: promote-dev-github-playbook-repo
      
  - name: 'Code promotion'
-   hosts: localhost
+   hosts: "{{ tower_fqdn }}"
    gather_facts: false
    roles:
     - role: update-prod-playbook-repo
