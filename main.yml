@@ -11,6 +11,7 @@
      
  - become: true
    hosts: localhost
+   become: true
    roles:
      - role: promote-dev-github-playbook-repo
      
