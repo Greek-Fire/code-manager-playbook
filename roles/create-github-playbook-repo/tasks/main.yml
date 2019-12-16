@@ -5,10 +5,7 @@
 
 - slurp:
     src:    "{{ tmp_git_repo_path }}requirements.yml"
-  register:  requirements2
-  
-- set_fact:
-    requirements: requirements2.content
+  register:  requirements
 
 - file:
     path: "{{ tmp_git_repo_path }}requirements.yml"
@@ -71,7 +68,7 @@
        committer:
          name:         "{{ prod_github_username }}"
          email:        "{{ email }}"
-       content:        "{{ requirements }}"
+       content:        "{{ requirements.contents }}"
   no_log:             true
   register:           put_response
   when:
