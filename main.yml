@@ -11,7 +11,7 @@
    gather_facts: false
    become: true
    roles:
-     - role: create-github-role-repo 
+     - role: create-github-playbook-repo 
      - role: promote-dev-github-role-repo 
      - role: promote-dev-github-playbook-repo
      
