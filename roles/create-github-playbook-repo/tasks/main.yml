@@ -71,7 +71,7 @@
        committer:
          name:         "{{ prod_github_username }}"
          email:        "{{ email }}"
-       content:        "{{ requirements.content }}"
+       content:        "{{ requirements }}"
   no_log:             true
   register:           put_response
   when:
