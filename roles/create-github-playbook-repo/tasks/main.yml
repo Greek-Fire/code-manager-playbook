@@ -5,7 +5,10 @@
 
 - slurp:
     src:    "{{ tmp_git_repo_path }}requirements.yml"
-  register:  requirements
+  register:  requirements2
+  
+- set_fact:
+    requirements: requirements2
 
 - file:
     path: "{{ tmp_git_repo_path }}requirements.yml"
