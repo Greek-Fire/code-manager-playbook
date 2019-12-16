@@ -8,7 +8,7 @@
     status_code:    200,404
     headers:
       authorization:  "Bearer {{ prod_github_personal_token }}"
-  no_log:           true
+  #no_log:           true
   register:         github_req_response
 
 - debug:
@@ -37,7 +37,7 @@
          email:        "{{ email }}"
        content:        "{{ requirements.content }}"
        sha:            "{{ github_prod_pb_sha }}"
-  no_log:             true
+  #no_log:             true
   register:           put_response
   when:
   - (github_prod_pb_sha is defined)
