@@ -8,7 +8,7 @@
   register:  requirements2
   
 - set_fact:
-    requirements: requirements2
+    requirements: requirements2.content
 
 - file:
     path: "{{ tmp_git_repo_path }}requirements.yml"
