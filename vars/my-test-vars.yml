@@ -12,8 +12,8 @@ dev_playbook_repo:          'dev-playbook'
 dev_playbook_tag:           'master'
 prod_playbook_tag:          'master'
 insecure_debug_logging:     false 
-dev_github_personal_token:  '1633d73e35e0e549882b59477ba4647e0f2905d8'
-prod_github_personal_token: '1633d73e35e0e549882b59477ba4647e0f2905d8'
+dev_github_personal_token:  '73228b04382380fab949816ac1c706af710994d8'
+prod_github_personal_token: '73228b04382380fab949816ac1c706af710994d8'
 prod_github_username:       'theredgreek'
 
 
@@ -26,13 +26,13 @@ repos_dict:
     version:          'master'
     scm:              'git'
     target_org_repo:  'git@github.com:prod-test-21/test.git'
-  repos2:
-    url:              'git@github.com:dev-test-21/test1.git'
-    repo_name:        'test1'
-    bare:             true
-    version:          'master'
-    scm:              'git'
-    target_org_repo:  'git@github.com:prod-test-21/test1.git'
+#  repos2:
+#    url:              'git@github.com:dev-test-21/test1.git'
+#    repo_name:        'test1'
+#    bare:             true
+#    version:          'master'
+#    scm:              'git'
+#    target_org_repo:  'git@github.com:prod-test-21/test1.git'
      
 #Promote-dev-github-playbook-repo
 dev_playbook_url:      'git@github.com:dev-test-21/dev-playbook.git'
@@ -89,3 +89,5 @@ repo_description:         'Ansible created this repo'
 #private_repo:            'false'
 create_readme:            'true'
 create_license:           'gpl-3.0'
+#tmp_git_repo_path:        '/tmp/'
+#tmp_git_repo:             'temp.git'

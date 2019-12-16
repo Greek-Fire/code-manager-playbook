@@ -1,21 +1,21 @@
 ---
  - name: 'Code promotion'
-   hosts: "{{ tower_fqdn }}"
+   hosts: "{{ tower_fqdn }}" 
    gather_facts: false
    roles:
      - role: check-github-readme 
      - role: grab-tower-ids 
      - role: create-github-role-repo 
-     - role: promote-dev-github-role-repo
      - role: create-github-playbook-repo
-     
+
  - hosts: "{{ tower_fqdn }}"
+   gather_facts: false
    become: true
    roles:
+     - role: promote-dev-github-role-repo 
      - role: promote-dev-github-playbook-repo
      
- - name: 'Code promotion'
-   hosts: "{{ tower_fqdn }}"
+ - hosts: "{{ tower_fqdn }}"
    gather_facts: false
    roles:
     - role: update-prod-playbook-repo

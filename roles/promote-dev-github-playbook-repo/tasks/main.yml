@@ -6,7 +6,7 @@
 - git:
     repo:     "{{ dev_playbook_url }}"
     bare:     "{{ dev_bare }}"
-    dest:     "{{ target_dest_pb }}"
+    dest:     "{{ target_dest_pb }}{{ tmp_git_repo }}"
     version:  "{{ prod_playbook_tag }}"
 
 - shell: |

@@ -1,12 +1,12 @@
 ---
 - set_fact:
-    target_dest: "{{ '/tmp/' + lookup('pipe','date +%Y%m%d%H%M%S') }}"
+    target_dest: "{{ tmp_git_repo_path + lookup('pipe','date +%Y%m%d%H%M%S') }}"
     
 
 - git:
     repo:    "{{ item.value.url }}"
     bare:    "{{ item.value.bare }}"
-    dest:    "{{ target_dest }}"
+    dest:    "{{ target_dest }}{{ tmp_git_repo }}"
     version: "{{ item.value.version }}"
 
 - shell: |
