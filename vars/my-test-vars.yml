@@ -12,8 +12,8 @@ dev_playbook_repo:          'dev-playbook'
 dev_playbook_tag:           'master'
 prod_playbook_tag:          'master'
 insecure_debug_logging:     false 
-dev_github_personal_token:  '73228b04382380fab949816ac1c706af710994d8'
-prod_github_personal_token: '73228b04382380fab949816ac1c706af710994d8'
+dev_github_personal_token:  '73228b04382380fab949816ac1c706af71091111'
+prod_github_personal_token: '73228b04382380fab949816ac1c706af71091111'
 prod_github_username:       'theredgreek'
 
 
