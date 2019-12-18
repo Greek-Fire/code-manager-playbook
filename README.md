@@ -17,7 +17,7 @@ Too keep the playbook as simple as possible, an example of all the variables nee
 
 Example Playbook
 ----------------
-
+```
 ---
  - name: 'Code promotion'
    hosts: "{{ tower_fqdn }}"
@@ -43,7 +43,7 @@ Example Playbook
     - role: create-tower-job-template
     - role: update-tower-job-template-survey
     
-         
+ ```        
 License
 -------
 
