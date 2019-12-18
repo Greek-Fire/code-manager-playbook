@@ -20,16 +20,24 @@ Example Playbook
 
 ---
  - name: 'Code promotion'
-   hosts: at.example.net
+   hosts: "{{ tower_fqdn }}"
    gather_facts: false
    roles:
-    - role: check-github-readme
-    - role: grab-tower-ids
-    - role: create-github-role-repo
-    - role: create-github-role-repo
-    - role: promote-dev-github-role-repo
-    - role: create-github-playbook-repo
-    - role: promote-dev-github-playbook-repo
+     - role: check-github-readme
+     - role: grab-tower-ids
+
+ - hosts: "{{ tower_fqdn }}"
+   gather_facts: false
+   become: true
+   roles:
+     - role: create-github-role-repo
+     - role: promote-dev-github-role-repo
+     - role: create-github-playbook-repo
+     - role: promote-dev-github-playbook-repo
+
+ - hosts: "{{ tower_fqdn }}"
+   gather_facts: false
+   roles:
     - role: update-prod-playbook-repo
     - role: create-tower-project
     - role: create-tower-job-template
