@@ -1,7 +1,7 @@
 Code Promoter
 =========
 
-This playbook will promote code from the DEV organization to the Prod organization. There are a number of validation checks. THe first one checks for the existence of a README.md file in the DEV playbook and the DEV roles.Also, the playbook will fail if you have two Github repos that share the same name.
+This playbook will promote code from the DEV organization to the Prod organization. There are a number of validation checks. The first one checks for the existence of a README.md file in the DEV playbook and the DEV roles. Also, the playbook will fail if you have two Github repos that share the same name.
 
 Requirements
 ------------
